@@ -1,5 +1,6 @@
 import { services } from '../data/services.js';
-import ServiceCard from '../components/ServiceCard.jsx';
+import ServiceList from '../components/ServiceList.jsx';
+import Section from '../components/Section.jsx';
 
 function HomePage() {
   return (
@@ -12,18 +13,20 @@ function HomePage() {
         </p>
       </header>
 
-      <section className="services-section">
-        <h2>Наші послуги</h2>
+      <Section title="Про компанію">
+        <p>
+          Наша компанія виконує ремонтні та будівельні роботи
+          для квартир, приватних будинків та інших об'єктів.
+        </p>
+      </Section>
+
+      <Section title="Наші послуги">
         {services.length === 0 ? (
           <p>Наразі послуги не додано.</p>
         ) : (
-          <div className="services-list">
-            {services.map((service) => (
-              <ServiceCard key={service.id} service={service} />
-            ))}
-          </div>
+          <ServiceList services={services} />
         )}
-      </section>
+      </Section>
     </div>
   );
 }

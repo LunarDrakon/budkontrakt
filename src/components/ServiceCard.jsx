@@ -1,14 +1,28 @@
+import Card from 'react-bootstrap/Card';
+
 function ServiceCard({ service }) {
   return (
-    <div className="service-card">
-      <h3>{service.name}</h3>
-      <p className="service-category">{service.category}</p>
-      <p>{service.description}</p>
-      <p className="service-price">{service.price}</p>
-      <p className={service.available ? 'available' : 'unavailable'}>
-        {service.available ? 'Доступно' : 'Тимчасово недоступно'}
-      </p>
-    </div>
+    <Card className="service-card">
+      <Card.Body>
+        <Card.Title>{service.name}</Card.Title>
+
+        <Card.Text className="service-category">
+          {service.category}
+        </Card.Text>
+
+        <Card.Text>
+          {service.description}
+        </Card.Text>
+
+        <Card.Text className="service-price">
+          {service.price}
+        </Card.Text>
+
+        <Card.Text className={service.available ? 'available' : 'unavailable'}>
+          {service.available ? 'Доступно' : 'Тимчасово недоступно'}
+        </Card.Text>
+      </Card.Body>
+    </Card>
   );
 }
 
