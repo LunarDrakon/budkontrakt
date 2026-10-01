@@ -1,8 +1,15 @@
 import Card from 'react-bootstrap/Card';
+import { useSelectedService } from '../context/SelectedServiceContext';
 
 function ServiceCard({ service }) {
+  const { selectService } = useSelectedService();
+
   return (
-    <Card className="service-card">
+    <Card
+      className="service-card"
+      onClick={() => selectService(service)}
+      style={{ cursor: 'pointer' }}
+    >
       <Card.Body>
         <Card.Title>{service.name}</Card.Title>
 
@@ -18,8 +25,12 @@ function ServiceCard({ service }) {
           {service.price}
         </Card.Text>
 
-        <Card.Text className={service.available ? 'available' : 'unavailable'}>
-          {service.available ? 'Доступно' : 'Тимчасово недоступно'}
+        <Card.Text
+          className={service.available ? 'available' : 'unavailable'}
+        >
+          {service.available
+            ? 'Доступно'
+            : 'Тимчасово недоступно'}
         </Card.Text>
       </Card.Body>
     </Card>
