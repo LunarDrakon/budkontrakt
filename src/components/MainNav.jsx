@@ -1,9 +1,30 @@
+import { NavLink } from 'react-router'
+
 export default function MainNav() {
-    return (
-        <nav>
-            <a href="#about">Про компанію</a>
-            {' | '}
-            <a href="#services">Наші послуги</a>
-        </nav>
-    )
+  return (
+    <nav>
+      <NavLink
+        to="/"
+        end
+      >
+        Головна
+      </NavLink>
+
+      {' | '}
+
+      <NavLink
+        to="/services"
+      >
+        Наші послуги
+      </NavLink>
+
+      {' | '}
+
+      <NavLink
+        to="/requests"
+      >
+        Заявки
+      </NavLink>
+    </nav>
+  )
 }

@@ -1,4 +1,5 @@
 import Card from 'react-bootstrap/Card';
+import { Link } from 'react-router';
 import { useSelectedService } from '../context/SelectedServiceContext';
 
 function ServiceCard({ service }) {
@@ -8,10 +9,13 @@ function ServiceCard({ service }) {
     <Card
       className="service-card"
       onClick={() => selectService(service)}
-      style={{ cursor: 'pointer' }}
     >
       <Card.Body>
-        <Card.Title>{service.name}</Card.Title>
+        <Card.Title>
+          <Link to={`/services/${service.id}`}>
+            {service.name}
+          </Link>
+        </Card.Title>
 
         <Card.Text className="service-category">
           {service.category}
@@ -26,7 +30,11 @@ function ServiceCard({ service }) {
         </Card.Text>
 
         <Card.Text
-          className={service.available ? 'available' : 'unavailable'}
+          className={
+            service.available
+              ? 'available'
+              : 'unavailable'
+          }
         >
           {service.available
             ? 'Доступно'

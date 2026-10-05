@@ -5,10 +5,7 @@ import Section from '../components/Section.jsx';
 import RequestForm from '../components/RequestForm.jsx';
 import RequestSummary from '../components/RequestSummary.jsx';
 import { useServiceFilter } from '../hooks/useServiceFilter';
-import {
-  SelectedServiceProvider,
-  useSelectedService
-} from '../context/SelectedServiceContext';
+import { useSelectedService } from '../context/SelectedServiceContext';
 
 function HomePageContent() {
   const [request, setRequest] = useState({
@@ -113,11 +110,7 @@ function HomePageContent() {
 }
 
 function HomePage() {
-  return (
-    <SelectedServiceProvider>
-      <HomePageContent />
-    </SelectedServiceProvider>
-  );
+  return <HomePageContent />;
 }
 
 export default HomePage;
