@@ -2,6 +2,8 @@ import SiteHeader from './SiteHeader'
 import MainNav from './MainNav'
 import { Outlet } from 'react-router'
 import { SelectedServiceProvider } from '../context/SelectedServiceContext'
+import RequestsProvider from '../providers/RequestsProvider'
+import { services } from '../data/services'
 
 export default function AppLayout() {
   return (
@@ -11,7 +13,9 @@ export default function AppLayout() {
 
       <main>
         <SelectedServiceProvider>
-          <Outlet />
+          <RequestsProvider services={services}>
+            <Outlet />
+          </RequestsProvider>
         </SelectedServiceProvider>
       </main>
     </>
