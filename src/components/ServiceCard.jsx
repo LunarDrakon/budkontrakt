@@ -1,4 +1,6 @@
 import Card from 'react-bootstrap/Card';
+import Badge from 'react-bootstrap/Badge';
+import Button from 'react-bootstrap/Button';
 import { Link } from 'react-router';
 import { useSelectedService } from '../context/SelectedServiceContext';
 
@@ -6,40 +8,67 @@ function ServiceCard({ service }) {
   const { selectService } = useSelectedService();
 
   return (
-    <Card
-      className="service-card"
-      onClick={() => selectService(service)}
-    >
-      <Card.Body>
-        <Card.Title>
-          <Link to={`/services/${service.id}`}>
-            {service.name}
-          </Link>
-        </Card.Title>
+    <Card className="service-card h-100">
+      <Card.Body className="d-flex flex-column">
+        <div className="service-card-heading">
+          <Card.Title>
+            <Link
+              to={`/services/${service.id}`}
+              className="service-title-link"
+              onClick={() => selectService(service)}
+            >
+              {service.name}
+            </Link>
+          </Card.Title>
 
-        <Card.Text className="service-category">
-          {service.category}
-        </Card.Text>
+          <Badge bg="light" text="dark" className="service-category">
+            {service.category}
+          </Badge>
+        </div>
 
-        <Card.Text>
+        <Card.Text className="service-description">
           {service.description}
         </Card.Text>
 
-        <Card.Text className="service-price">
-          {service.price}
-        </Card.Text>
+        <div className="service-card-bottom">
+          <Card.Text className="service-price">
+            <span>Вартість:</span>{' '}
+            <strong>{service.price}</strong>
+          </Card.Text>
 
-        <Card.Text
-          className={
-            service.available
-              ? 'available'
-              : 'unavailable'
-          }
+          <div className="service-status">
+            <span
+              className={
+                service.available
+                  ? 'availability-dot available-dot'
+                  : 'availability-dot unavailable-dot'
+              }
+              aria-hidden="true"
+            />
+
+            <span
+              className={
+                service.available
+                  ? 'available'
+                  : 'unavailable'
+              }
+            >
+              {service.available
+                ? 'Доступно'
+                : 'Тимчасово недоступно'}
+            </span>
+          </div>
+        </div>
+
+        <Button
+          as={Link}
+          to={`/services/${service.id}`}
+          variant="outline-primary"
+          className="service-details-button mt-3"
+          onClick={() => selectService(service)}
         >
-          {service.available
-            ? 'Доступно'
-            : 'Тимчасово недоступно'}
-        </Card.Text>
+          Детальніше
+        </Button>
       </Card.Body>
     </Card>
   );
