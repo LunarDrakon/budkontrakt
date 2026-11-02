@@ -1,51 +1,91 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { RequestsContext } from '../context/RequestsContext.js'
-import { requests as initialRequests } from '../data/requests.js'
+import { requestService } from '../services/index.js'
 import { validateRequest } from '../domain/requestValidation.js'
 
 export default function RequestsProvider({ services, children }) {
-  const [requests, setRequests] = useState(() => (
-    initialRequests.map((request) => ({ ...request }))
-  ))
+  const [requests, setRequests] = useState([])
   const [notice, setNotice] = useState('')
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
 
-  function createRequest(input) {
+  const refreshIdRef = useRef(0)
+
+  async function refreshRequests() {
+    const currentRequestId = ++refreshIdRef.current
+
+    setLoading(true)
+    setError('')
+
+    try {
+      const data = await requestService.getAll()
+
+      // Застосовуємо результат лише останнього запиту
+      if (currentRequestId === refreshIdRef.current) {
+        setRequests(data)
+      }
+
+      return data
+    } catch (error) {
+      if (currentRequestId === refreshIdRef.current) {
+        setError(error.message || 'Не вдалося завантажити заявки.')
+      }
+
+      throw error
+    } finally {
+      // Старий запит не повинен змінювати стан завантаження
+      if (currentRequestId === refreshIdRef.current) {
+        setLoading(false)
+      }
+    }
+  }
+
+  useEffect(() => {
+    refreshRequests().catch(() => {})
+
+    return () => {
+      // Робимо незавершені запити застарілими при демонтуванні
+      refreshIdRef.current += 1
+    }
+  }, [])
+
+  async function createRequest(input) {
     const validation = validateRequest(input, services)
     if (!validation.ok) return validation
 
-    const record = {
-      id: `req-${crypto.randomUUID()}`,
-      ...validation.value,
+    try {
+      const record = await requestService.create(validation.value)
+      await refreshRequests()
+      setNotice('Заявку створено в локальній колекції.')
+      return { ok: true, record }
+    } catch (error) {
+      return { ok: false, message: error.message }
     }
-    setRequests((previous) => [...previous, record])
-    setNotice('Заявку створено в поточній локальній колекції.')
-    return { ok: true, record }
   }
 
-  function updateRequest(id, input) {
-    const current = requests.find((request) => request.id === id)
-    if (!current) {
-      return { ok: false, message: 'Заявку для оновлення не знайдено.' }
-    }
-
+  async function updateRequest(id, input) {
     const validation = validateRequest(input, services)
     if (!validation.ok) return validation
 
-    const record = { ...validation.value, id: current.id }
-    setRequests((previous) => previous.map((request) => (
-      request.id === id ? record : request
-    )))
-    setNotice('Зміни заявки збережено в поточній локальній колекції.')
-    return { ok: true, record }
+    try {
+      const record = await requestService.update(id, validation.value)
+      await refreshRequests()
+      setNotice('Зміни заявки збережено.')
+      return { ok: true, record }
+    } catch (error) {
+      return { ok: false, message: error.message }
+    }
   }
 
-  function deleteRequest(id) {
-    if (!requests.some((request) => request.id === id)) {
-      return { ok: false, message: 'Заявку для видалення не знайдено.' }
+  async function deleteRequest(id) {
+    try {
+      await requestService.delete(id)
+      await refreshRequests()
+      setNotice('Заявку видалено.')
+      return { ok: true }
+    } catch (error) {
+      return { ok: false, message: error.message }
     }
-    setRequests((previous) => previous.filter((request) => request.id !== id))
-    setNotice('Заявку видалено з поточної локальної колекції.')
-    return { ok: true }
   }
 
   function dismissNotice() {
@@ -53,10 +93,19 @@ export default function RequestsProvider({ services, children }) {
   }
 
   return (
-    <RequestsContext.Provider value={{
-      requests, createRequest, updateRequest, deleteRequest,
-      notice, dismissNotice,
-    }}>
+    <RequestsContext.Provider
+      value={{
+        requests,
+        loading,
+        error,
+        refreshRequests,
+        createRequest,
+        updateRequest,
+        deleteRequest,
+        notice,
+        dismissNotice,
+      }}
+    >
       {children}
     </RequestsContext.Provider>
   )

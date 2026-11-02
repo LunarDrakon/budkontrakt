@@ -1,9 +1,8 @@
-
 import { Link, useSearchParams } from 'react-router'
 import useRequests from '../hooks/useRequests'
 
 export default function RequestsPage() {
-  const { requests } = useRequests()
+  const { requests, loading, error, refreshRequests } = useRequests()
   const [searchParams, setSearchParams] = useSearchParams()
 
   const query = searchParams.get('q') ?? ''
@@ -80,98 +79,123 @@ export default function RequestsPage() {
     <>
       <h2>Заявки</h2>
       <p>Список заявок клієнтів.</p>
-      <p>Усього заявок у колекції: {requests.length}</p>
 
       <p>
         <Link to="/requests/new">Нова заявка</Link>
       </p>
 
-      <section>
-        <h3>Пошук і фільтрація</h3>
+      <button
+        type="button"
+        onClick={() => refreshRequests().catch(() => {})}
+        disabled={loading}
+      >
+        {loading ? 'Завантаження...' : 'Оновити список'}
+      </button>
 
-        <p>
-          <label htmlFor="request-search">
-            Пошук за ім’ям замовника або описом робіт:
-          </label>
-          <br />
-          <input
-            id="request-search"
-            type="search"
-            value={query}
-            onChange={(event) =>
-              updateParameter('q', event.target.value, '', true)
-            }
-            placeholder="Введіть текст для пошуку"
-          />
-        </p>
-
-        <p>
-          <label htmlFor="survey-filter">Потреба в замірах:</label>
-          <br />
-          <select
-            id="survey-filter"
-            value={survey}
-            onChange={(event) =>
-              updateParameter('survey', event.target.value, 'all')
-            }
+      {loading ? (
+        <p role="status">Завантаження заявок...</p>
+      ) : error ? (
+        <div role="alert">
+          <p>Не вдалося завантажити заявки: {error}</p>
+          <button
+            type="button"
+            onClick={() => refreshRequests().catch(() => {})}
           >
-            <option value="all">Усі заявки</option>
-            <option value="yes">З потрібними замірами</option>
-            <option value="no">Без потреби в замірах</option>
-          </select>
-        </p>
-
-        <p>
-          <label htmlFor="request-sort">Сортування:</label>
-          <br />
-          <select
-            id="request-sort"
-            value={sort}
-            onChange={(event) =>
-              updateParameter('sort', event.target.value, 'name')
-            }
-          >
-            <option value="name">За ім’ям замовника</option>
-            <option value="area-asc">За площею: від меншої до більшої</option>
-            <option value="area-desc">За площею: від більшої до меншої</option>
-          </select>
-        </p>
-
-        <button type="button" onClick={resetFilters}>
-          Скинути фільтри
-        </button>
-      </section>
-
-      {requests.length === 0 ? (
-        <p>
-          Заявок поки немає. Створіть першу заявку, щоб вона з’явилася у списку.
-        </p>
-      ) : visibleRequests.length === 0 ? (
-        <p>
-          За заданими умовами заявок не знайдено. Спробуйте змінити пошук або
-          фільтри.
-        </p>
+            Спробувати ще раз
+          </button>
+        </div>
       ) : (
         <>
-          <p>Знайдено заявок: {visibleRequests.length}</p>
+          <p>Усього заявок у колекції: {requests.length}</p>
 
-          <ul>
-            {visibleRequests.map((request) => {
-              const requestPath =
-                `/requests/${encodeURIComponent(request.id)}`
+          <section>
+            <h3>Пошук і фільтрація</h3>
 
-              return (
-                <li key={request.id}>
-                  <strong>{request.id}</strong>:{' '}
-                  {request.customerName}, {request.area} м²
-                  {' — '}
-                  <Link to={requestPath}>Переглянути</Link>
-                  {' | '}
-                  <Link to={`${requestPath}/edit`}>Редагувати</Link>
-                </li>
-              )
-            })}
-          </ul>
+            <p>
+              <label htmlFor="request-search">
+                Пошук за ім’ям замовника або описом робіт:
+              </label>
+              <br />
+              <input
+                id="request-search"
+                type="search"
+                value={query}
+                onChange={(event) =>
+                  updateParameter('q', event.target.value, '', true)
+                }
+                placeholder="Введіть текст для пошуку"
+              />
+            </p>
+
+            <p>
+              <label htmlFor="survey-filter">Потреба в замірах:</label>
+              <br />
+              <select
+                id="survey-filter"
+                value={survey}
+                onChange={(event) =>
+                  updateParameter('survey', event.target.value, 'all')
+                }
+              >
+                <option value="all">Усі заявки</option>
+                <option value="yes">З потрібними замірами</option>
+                <option value="no">Без потреби в замірах</option>
+              </select>
+            </p>
+
+            <p>
+              <label htmlFor="request-sort">Сортування:</label>
+              <br />
+              <select
+                id="request-sort"
+                value={sort}
+                onChange={(event) =>
+                  updateParameter('sort', event.target.value, 'name')
+                }
+              >
+                <option value="name">За ім’ям замовника</option>
+                <option value="area-asc">За площею: від меншої до більшої</option>
+                <option value="area-desc">За площею: від більшої до меншої</option>
+              </select>
+            </p>
+
+            <button type="button" onClick={resetFilters}>
+              Скинути фільтри
+            </button>
+          </section>
+
+          {requests.length === 0 ? (
+            <p>
+              Заявок поки немає. Створіть першу заявку, щоб вона з’явилася у списку.
+            </p>
+          ) : visibleRequests.length === 0 ? (
+            <p>
+              За заданими умовами заявок не знайдено. Спробуйте змінити пошук або
+              фільтри.
+            </p>
+          ) : (
+            <>
+              <p>Знайдено заявок: {visibleRequests.length}</p>
+
+              <ul>
+                {visibleRequests.map((request) => {
+                  const requestPath =
+                    `/requests/${encodeURIComponent(request.id)}`
+
+                  return (
+                    <li key={request.id}>
+                      <strong>{request.id}</strong>:{' '}
+                      {request.customerName}, {request.area} м²
+                      {' — '}
+                      <Link to={requestPath}>Переглянути</Link>
+                      {' | '}
+                      <Link to={`${requestPath}/edit`}>Редагувати</Link>
+                    </li>
+                  )
+                })}
+              </ul>
+            </>
+          )}
         </>
       )}
     </>

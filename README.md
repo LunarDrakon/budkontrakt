@@ -1,16 +1,111 @@
-# React + Vite
+Ремонтно-будівельна компанія
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Опис проєкту
 
-Currently, two official plugins are available:
+Вебзастосунок ремонтно-будівельної компанії призначений для ознайомлення з послугами компанії та створення, перегляду, редагування і видалення заявок клієнтів.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Проєкт розроблено з використанням React та Vite.
 
-## React Compiler
+Використані технології
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+React
 
-## Expanding the ESLint configuration
+JavaScript
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Vite
+
+React Router
+
+React Bootstrap
+
+CSS
+
+Docker
+
+Git
+
+Основні можливості
+
+Перегляд інформації про компанію.
+
+Перегляд переліку будівельних і ремонтних послуг.
+
+Створення заявок клієнтів.
+
+Перегляд деталей заявки.
+
+Редагування та видалення заявок.
+
+Перевірка правильності введених даних.
+
+Пошук, фільтрація та сортування заявок.
+
+Асинхронна робота із заявками.
+
+Обробка помилок і станів завантаження.
+
+Повторне завантаження даних.
+
+Структура проєкту
+
+src/components/ — компоненти інтерфейсу.
+
+src/pages/ — сторінки вебзастосунку.
+
+src/providers/ — контекст і керування станом заявок.
+
+src/context/ — контекст React.
+
+src/hooks/ — користувацькі хуки.
+
+src/services/ — сервіси для роботи із заявками.
+
+src/domain/ — перевірка та правила валідації даних.
+
+src/data/ — початкові дані застосунку.
+
+Встановлення та запуск
+
+Для запуску проєкту необхідно мати встановлений Node.js.
+
+Відкрити термінал у папці проєкту.
+
+Встановити залежності:
+
+npm install
+
+Створити файл .env у кореневій папці проєкту та додати налаштування:
+
+VITE_API_MODE=mock
+VITE_API_BASE_URL=http://localhost:3000/api
+
+Запустити застосунок:
+
+npm run dev
+
+Відкрити адресу, яку покаже Vite у терміналі.
+
+Робота із сервісами
+
+Для роботи із заявками передбачено два режими:
+
+mock — локальний сервіс із початковими даними, асинхронною затримкою та можливістю імітації помилок.
+
+api — підготовлений модуль для взаємодії із зовнішнім REST API.
+
+Режим роботи вибирається за допомогою змінної середовища VITE_API_MODE.
+
+Адреса зовнішнього API задається через VITE_API_BASE_URL. Для використання режиму api необхідно мати запущений сервер, який підтримує відповідні REST-запити.
+
+Перевірка проєкту
+
+Для перевірки production-збірки використовуються команди:
+
+npm run build
+npm run preview
+
+Команда npm run build створює production-збірку, а npm run preview дозволяє переглянути її локально.
+
+Автор
+
+Навчальний проєкт, виконаний у межах лабораторних робіт з веброзробки.

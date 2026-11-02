@@ -1,4 +1,3 @@
-
 import { useState } from 'react'
 import RequestForm from './RequestForm'
 import RequestSummary from './RequestSummary'
@@ -27,6 +26,7 @@ export default function RequestEditor({
   const [touched, setTouched] = useState({})
   const [submitAttempted, setSubmitAttempted] = useState(false)
   const [operationError, setOperationError] = useState('')
+  const [isSaving, setIsSaving] = useState(false)
 
   const validation = validateRequest(draft, services)
   const errors = {}
@@ -62,19 +62,29 @@ export default function RequestEditor({
     setOperationError('')
   }
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault()
     setSubmitAttempted(true)
     setOperationError('')
 
-    if (!validation.ok) return
+    if (!validation.ok || isSaving) return
 
-    const result = onSave(draft)
+    setIsSaving(true)
 
-    if (!result.ok) {
+    try {
+      const result = await onSave(draft)
+
+      if (!result?.ok) {
+        setOperationError(
+          result?.message || 'Не вдалося зберегти заявку.'
+        )
+      }
+    } catch (error) {
       setOperationError(
-        result.message ?? 'Не вдалося зберегти заявку.'
+        error?.message || 'Сталася помилка під час збереження заявки.'
       )
+    } finally {
+      setIsSaving(false)
     }
   }
 
@@ -90,12 +100,13 @@ export default function RequestEditor({
             draft={draft}
             errors={errors}
             operationError={operationError}
+            isSaving={isSaving}
             onChange={handleChange}
             onBlur={handleBlur}
             onSubmit={handleSubmit}
             onReset={handleReset}
             onCancel={onCancel}
-            submitLabel={submitLabel}
+            submitLabel={isSaving ? 'Збереження...' : submitLabel}
             cancelLabel={cancelLabel}
           />
         </div>

@@ -22,11 +22,13 @@ export default function RequestCreatePage() {
     needsSurvey: false,
   }
 
-  function handleSave(draft) {
-    const result = createRequest(draft)
+  async function handleSave(draft) {
+    const result = await createRequest(draft)
+
     if (result.ok) {
       navigate('/requests')
     }
+
     return result
   }
 

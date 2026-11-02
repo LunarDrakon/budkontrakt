@@ -5,15 +5,43 @@ import useRequests from '../hooks/useRequests'
 export default function RequestEditPage() {
   const { requestId } = useParams()
   const navigate = useNavigate()
-  const { requests, updateRequest } = useRequests()
 
-  const request = requests.find((item) => item.id === requestId)
+  const {
+    requests,
+    loading,
+    error,
+    refreshRequests,
+    updateRequest,
+  } = useRequests()
+
+  const request = requests.find(
+    (item) => String(item.id) === String(requestId)
+  )
+
+  if (!request && loading) {
+    return <p>Завантаження заявки...</p>
+  }
+
+  if (!request && error) {
+    return (
+      <>
+        <p role="alert">{error}</p>
+        <button type="button" onClick={() => refreshRequests()}>
+          Повторити завантаження
+        </button>
+        <p><Link to="/requests">Повернутися до заявок</Link></p>
+      </>
+    )
+  }
 
   if (!request) {
     return (
       <>
         <h2>Заявку не знайдено</h2>
-        <p>Заявки з ідентифікатором {requestId} немає в поточній колекції.</p>
+        <p>
+          Заявки з ідентифікатором {requestId} немає
+          в поточній колекції.
+        </p>
         <Link to="/requests">Повернутися до заявок</Link>
       </>
     )
@@ -28,11 +56,13 @@ export default function RequestEditPage() {
     needsSurvey: request.needsSurvey,
   }
 
-  function handleSave(draft) {
-    const result = updateRequest(request.id, draft)
+  async function handleSave(draft) {
+    const result = await updateRequest(request.id, draft)
+
     if (result.ok) {
       navigate('/requests')
     }
+
     return result
   }
 
