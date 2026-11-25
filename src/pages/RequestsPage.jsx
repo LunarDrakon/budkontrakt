@@ -1,3 +1,4 @@
+
 import { Link, useSearchParams } from 'react-router'
 import useRequests from '../hooks/useRequests'
 
@@ -51,20 +52,20 @@ export default function RequestsPage() {
       return matchesQuery && matchesSurvey
     })
     .sort((a, b) => {
-      let result = 0
+      let comparison
 
       if (sort === 'area-asc') {
-        result = Number(a.area) - Number(b.area)
+        comparison = Number(a.area) - Number(b.area)
       } else if (sort === 'area-desc') {
-        result = Number(b.area) - Number(a.area)
+        comparison = Number(b.area) - Number(a.area)
       } else {
-        result = (a.customerName ?? '').localeCompare(
+        comparison = (a.customerName ?? '').localeCompare(
           b.customerName ?? '',
           'uk'
         )
       }
 
-      return result || String(a.id).localeCompare(String(b.id), 'uk')
+      return comparison || String(a.id).localeCompare(String(b.id), 'uk')
     })
 
   function resetFilters() {

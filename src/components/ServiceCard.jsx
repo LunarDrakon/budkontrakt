@@ -2,7 +2,7 @@ import Card from 'react-bootstrap/Card';
 import Badge from 'react-bootstrap/Badge';
 import Button from 'react-bootstrap/Button';
 import { Link } from 'react-router';
-import { useSelectedService } from '../context/SelectedServiceContext';
+import { useSelectedService } from "../context/useSelectedService.js";
 
 function ServiceCard({ service }) {
   const { selectService } = useSelectedService();

@@ -1,16 +1,18 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 
 export function useServiceFilter(services) {
   const [searchText, setSearchText] = useState('');
 
-  const visibleServices = services.filter((service) => {
+  const visibleServices = useMemo(() => {
     const search = searchText.toLowerCase();
 
-    return (
-      service.name.toLowerCase().includes(search) ||
-      service.description.toLowerCase().includes(search)
-    );
-  });
+    return services.filter((service) => {
+      return (
+        service.name.toLowerCase().includes(search) ||
+        service.description.toLowerCase().includes(search)
+      );
+    });
+  }, [services, searchText]);
 
   return {
     searchText,

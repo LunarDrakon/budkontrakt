@@ -4,7 +4,7 @@ import { services } from '../data/services.js';
 import ServiceList from '../components/ServiceList.jsx';
 import Section from '../components/Section.jsx';
 import { useServiceFilter } from '../hooks/useServiceFilter';
-import { useSelectedService } from '../context/SelectedServiceContext';
+import { useSelectedService } from "../context/useSelectedService.js";
 
 function HomePageContent() {
   const {

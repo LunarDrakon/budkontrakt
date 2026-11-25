@@ -1,7 +1,7 @@
 import SiteHeader from './SiteHeader'
 import MainNav from './MainNav'
 import { Outlet } from 'react-router'
-import { SelectedServiceProvider } from '../context/SelectedServiceContext'
+import { SelectedServiceProvider } from "../context/SelectedServiceContext.jsx";
 import RequestsProvider from '../providers/RequestsProvider'
 import { services } from '../data/services'
 

@@ -1,6 +1,5 @@
-import { createContext, useContext, useState } from 'react';
-
-const SelectedServiceContext = createContext(null);
+import { useState } from 'react';
+import { SelectedServiceContext } from './SelectedServiceContext.js';
 
 export function SelectedServiceProvider({ children }) {
   const [selectedService, setSelectedService] = useState(null);
@@ -18,14 +17,10 @@ export function SelectedServiceProvider({ children }) {
       value={{
         selectedService,
         selectService,
-        clearSelectedService
+        clearSelectedService,
       }}
     >
       {children}
     </SelectedServiceContext.Provider>
   );
-}
-
-export function useSelectedService() {
-  return useContext(SelectedServiceContext);
 }

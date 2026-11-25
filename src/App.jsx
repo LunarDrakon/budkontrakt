@@ -1,4 +1,3 @@
-
 import { Routes, Route } from 'react-router'
 
 import AppLayout from './components/AppLayout'
